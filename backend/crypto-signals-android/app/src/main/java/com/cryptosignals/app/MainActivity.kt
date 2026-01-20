@@ -62,6 +62,26 @@ class MainActivity : AppCompatActivity() {
 
         // Initial fetch
         fetchSignals()
+
+        // Check for notification intent extras
+        intent?.extras?.let {
+            val title = it.getString("notification_title")
+            val body = it.getString("notification_body")
+            if (title != null && body != null) {
+                showNotificationDialog(title, body)
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: android.content.Intent?) {
+        super.onNewIntent(intent)
+        intent?.extras?.let {
+            val title = it.getString("notification_title")
+            val body = it.getString("notification_body")
+            if (title != null && body != null) {
+                showNotificationDialog(title, body)
+            }
+        }
     }
 
     private fun fetchSignals() {
