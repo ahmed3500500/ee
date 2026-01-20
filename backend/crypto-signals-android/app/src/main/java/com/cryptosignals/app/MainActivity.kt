@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         // Initial fetch
         fetchSignals()
+        refreshHandler.postDelayed(refreshRunnable, 30000)
 
         // Check for notification intent extras
         intent?.extras?.let {

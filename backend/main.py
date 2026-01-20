@@ -260,7 +260,8 @@ async def run_market_scan():
                 }
     
     # Update latest signals list
-    latest_signals = sorted(new_signals, key=lambda x: x['score'], reverse=True)
+    # User requested Market Cap order (which matches WATCHLIST order), not Score order
+    latest_signals = new_signals
     print("✅ Scan Complete.")
 
 @app.on_event("startup")
