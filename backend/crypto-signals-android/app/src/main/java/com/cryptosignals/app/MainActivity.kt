@@ -82,4 +82,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun showNotificationDialog(title: String, body: String) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(body)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
 }

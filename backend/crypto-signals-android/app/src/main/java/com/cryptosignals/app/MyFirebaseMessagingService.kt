@@ -33,6 +33,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun sendNotification(title: String?, messageBody: String?) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra("notification_title", title)
+        intent.putExtra("notification_body", messageBody)
+
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
@@ -44,6 +47,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setSmallIcon(R.drawable.ic_app_icon)
             .setContentTitle(title ?: "Crypto Signal")
             .setContentText(messageBody)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(messageBody))
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
