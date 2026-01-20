@@ -110,4 +110,26 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .show()
     }
+
+    private fun showHistoryDialog() {
+        val prefs = getSharedPreferences("crypto_prefs", android.content.Context.MODE_PRIVATE)
+        val historySet = prefs.getStringSet("notification_history", emptySet()) ?: emptySet()
+        
+        val list = historySet.toList().sortedByDescending { it.split("|")[0].toLong() }
+        val displayList = list.map { 
+            val parts = it.split("|")
+            if (parts.size >= 3) "${parts[1]}\n${parts[2]}" else it 
+        }.toTypedArray()
+
+        if (displayList.isEmpty()) {
+            Toast.makeText(this, "No notifications yet", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Notifications")
+            .setItems(displayList, null)
+            .setPositiveButton("Close") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
 }

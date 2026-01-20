@@ -65,6 +65,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    
+    // Coil for Image Loading
+    implementation("io.coil-kt:coil:2.5.0")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))

@@ -10,6 +10,7 @@ data class Signal(
     val coin: String,
     val pair: String,
     val price: String,
+    val image_url: String,
     val score_value: Int,
     val score_color: String,
     val status_text: String,

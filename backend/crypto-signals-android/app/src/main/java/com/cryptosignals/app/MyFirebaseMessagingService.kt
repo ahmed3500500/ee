@@ -66,6 +66,28 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         notificationManager.notify(0, notificationBuilder.build())
+        
+        saveNotification(title, messageBody)
+    }
+
+    private fun saveNotification(title: String?, body: String?) {
+        if (title == null || body == null) return
+        
+        val prefs = getSharedPreferences("crypto_prefs", Context.MODE_PRIVATE)
+        val history = prefs.getStringSet("notification_history", mutableSetOf()) ?: mutableSetOf()
+        
+        val timestamp = System.currentTimeMillis()
+        val entry = "$timestamp|$title|$body"
+        
+        history.add(entry)
+        
+        // Limit to last 10
+        if (history.size > 10) {
+            val sorted = history.sortedBy { it.split("|")[0].toLong() }
+            history.remove(sorted.first())
+        }
+        
+        prefs.edit().putStringSet("notification_history", history).apply()
     }
 
     companion object {

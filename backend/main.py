@@ -341,11 +341,15 @@ def get_android_signals():
     """
     android_signals = []
     for s in latest_signals:
+        coin = s['symbol'].split('/')[0]
+        image_url = f"https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/{coin.lower()}.png"
+
         android_signals.append({
             "id": f"{s['symbol']}-{s['timestamp']}",
-            "coin": s['symbol'].split('/')[0],
+            "coin": coin,
             "pair": s['symbol'],
             "price": f"${s['price']:.2f}",
+            "image_url": image_url,
             "score_value": s['score'],
             "score_color": "#00C853" if s['score'] >= 80 else "#FFAB00", # Green for Strong, Amber for Medium
             "status_text": s['status'],
