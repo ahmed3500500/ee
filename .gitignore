@@ -1,0 +1,8 @@
+backend/serviceAccountKey.json
+backend/venv/
+backend/__pycache__/
+*.pyc
+.DS_Store
+.gradle
+build/
+!backend/crypto-signals-android/app/google-services.json

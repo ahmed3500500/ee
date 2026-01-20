@@ -1,0 +1,72 @@
+package com.cryptosignals.app
+
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.google.firebase.messaging.FirebaseMessaging
+import java.util.Locale
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var adapter: SignalAdapter
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Subscribe to notifications based on language
+        val lang = Locale.getDefault().language
+        val topic = if (lang == "ar") "signals_ar" else "signals_en"
+        
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("FCM", "Subscribed to $topic")
+                } else {
+                    Log.w("FCM", "Subscribe failed", task.exception)
+                }
+            }
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        swipeRefresh = findViewById(R.id.swipeRefresh)
+        
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = SignalAdapter(emptyList())
+        recyclerView.adapter = adapter
+
+        swipeRefresh.setOnRefreshListener {
+            fetchSignals()
+        }
+
+        // Initial fetch
+        fetchSignals()
+    }
+
+    private fun fetchSignals() {
+        swipeRefresh.isRefreshing = true
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.instance.getSignals()
+                withContext(Dispatchers.Main) {
+                    adapter.updateData(response.data)
+                    swipeRefresh.isRefreshing = false
+                }
+            } catch (e: Exception) {
+                Log.e("CryptoSignals", "Error fetching signals", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    swipeRefresh.isRefreshing = false
+                }
+            }
+        }
+    }
+}
