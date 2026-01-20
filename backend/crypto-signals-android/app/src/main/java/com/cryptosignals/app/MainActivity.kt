@@ -25,6 +25,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: SignalAdapter
     private lateinit var swipeRefresh: SwipeRefreshLayout
 
+    private val refreshHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val refreshRunnable = object : Runnable {
+        override fun run() {
+            fetchSignals()
+            refreshHandler.postDelayed(this, 30000) // Refresh every 30 seconds
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
