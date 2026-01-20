@@ -29,6 +29,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Setup Toolbar - Click Listener for Bell
+        findViewById<android.widget.ImageView>(R.id.iconNotification).setOnClickListener {
+            showHistoryDialog()
+        }
+
         // Request Notification Permission for Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -82,6 +87,11 @@ class MainActivity : AppCompatActivity() {
                 showNotificationDialog(title, body)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        refreshHandler.removeCallbacks(refreshRunnable)
     }
 
     private fun fetchSignals() {

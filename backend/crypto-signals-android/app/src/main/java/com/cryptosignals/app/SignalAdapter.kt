@@ -53,6 +53,13 @@ class SignalAdapter(private var signals: List<Signal>) : RecyclerView.Adapter<Si
         } catch (e: Exception) {
             // Ignore
         }
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = android.content.Intent(context, DetailActivity::class.java)
+            intent.putExtra("pair", signal.pair)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = signals.size
