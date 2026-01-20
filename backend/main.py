@@ -359,3 +359,18 @@ def get_android_signals():
         "status": "success",
         "data": android_signals
     }
+
+@app.post("/test-notification")
+def test_notification():
+    """
+    Sends a test notification to check FCM configuration.
+    """
+    if not FCM_ENABLED:
+        return {
+            "status": "error",
+            "message": "FCM is NOT enabled. Please place 'serviceAccountKey.json' in the backend folder and restart the server."
+        }
+        
+    send_fcm_notification('signals_en', 'Test Notification', 'This is a test message from your Crypto Server (English).')
+    send_fcm_notification('signals_ar', 'إشعار تجريبي', 'هذه رسالة تجريبية من سيرفر الكريبتو الخاص بك (عربي).')
+    return {"status": "success", "message": "Test notifications sent to signals_en and signals_ar"}
