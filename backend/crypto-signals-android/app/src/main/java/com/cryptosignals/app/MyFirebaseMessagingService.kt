@@ -41,7 +41,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val channelId = "CryptoSignalsChannel"
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(android.R.drawable.stat_sys_warning) // Use a proper icon in production
+            .setSmallIcon(R.drawable.ic_app_icon)
             .setContentTitle(title ?: "Crypto Signal")
             .setContentText(messageBody)
             .setAutoCancel(true)
