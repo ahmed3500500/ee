@@ -302,6 +302,37 @@ async def trigger_scan(background_tasks: BackgroundTasks):
     background_tasks.add_task(run_market_scan)
     return {"message": "Scan started in background"}
 
+from datetime import datetime, timezone
+
+def get_time_ago(timestamp_str):
+    try:
+        # Parse timestamp (assuming ISO format from isoformat())
+        # If timestamp is already a datetime object, use it directly
+        if isinstance(timestamp_str, str):
+            signal_time = datetime.fromisoformat(timestamp_str)
+        else:
+            signal_time = timestamp_str
+            
+        now = datetime.now(timezone.utc)
+        # Ensure signal_time is timezone-aware
+        if signal_time.tzinfo is None:
+            signal_time = signal_time.replace(tzinfo=timezone.utc)
+            
+        diff = now - signal_time
+        minutes = int(diff.total_seconds() / 60)
+        
+        if minutes < 1:
+            return "Just now"
+        elif minutes < 60:
+            return f"{minutes}m ago"
+        elif minutes < 1440:
+            return f"{minutes // 60}h ago"
+        else:
+            return f"{minutes // 1440}d ago"
+    except Exception as e:
+        print(f"Error calculating time_ago: {e}")
+        return "Just now"
+
 @app.get("/android/signals")
 def get_android_signals():
     """
@@ -321,7 +352,7 @@ def get_android_signals():
             "entry": s['trade_setup']['entry_zone'],
             "targets": f"TP1: {s['trade_setup']['target_1']:.2f} | TP2: {s['trade_setup']['target_2']:.2f}",
             "stop_loss": f"Exit: {s['trade_setup']['stop_loss']:.2f}",
-            "time_ago": "Just now" # Should calculate real time diff
+            "time_ago": get_time_ago(s['timestamp'])
         })
     
     return {
